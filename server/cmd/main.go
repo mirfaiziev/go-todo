@@ -1,7 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"log"
+	"todo-service/internal/adapter/database"
+	"todo-service/internal/port/http"
+)
 
 func main() {
-	fmt.Println("Hello world 1")
+	database.InitConnection()
+
+	if err := http.InitServer(); err != nil {
+		log.Fatal("cannot init http server")
+	}
 }
