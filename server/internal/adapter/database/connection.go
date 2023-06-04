@@ -2,30 +2,26 @@ package database
 
 import (
 	"database/sql"
-	"fmt"
+	"log"
 	"os"
 
 	_ "github.com/lib/pq"
 )
 
-func InitConnection() {
-	fmt.Println()
+func NewDBConn(logger *log.Logger) (*sql.DB, error) {
 	// open database
 	db, err := sql.Open("postgres", os.Getenv("POSTGRES_DSN"))
-	CheckError(err)
-
-	// close database
-	defer db.Close()
+	if err != nil {
+		return nil, err
+	}
 
 	// check db
 	err = db.Ping()
-	CheckError(err)
-
-	fmt.Println("Connected!")
-}
-
-func CheckError(err error) {
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
+
+	logger.Println("Database initialized.")
+
+	return db, nil
 }

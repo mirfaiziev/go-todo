@@ -11,3 +11,7 @@ func NewTodoRepository(db *sql.DB) *TodoRepository {
 		db: db,
 	}
 }
+
+func (r *TodoRepository) findAll() {
+
+}
