@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  server:
+    build: 
+      context: ./server
+      target: dev
+    depends_on:
+      - db
+    environment:
+      - DB_DSN="postgresql://postgres:postgres@db:5432/postgres"
+    volumes:
+      - ./server:/go/src/service
+    ports:
+      - 8080:8080
+    command: /bin/sh -c "while sleep 1000; do :; done"
+
+  
+  db:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - '5432:5432'
