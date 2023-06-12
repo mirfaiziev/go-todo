@@ -17,22 +17,27 @@ RUN apt-get update \
     # Install other tools.
     # && go get -v golang.org/x/tools/gopls \
     # && go get github.com/google/wire/cmd/wire \
-    # Clean up.
     && go install -v golang.org/x/tools/gopls@latest \
     && go install -v github.com/ramya-rao-a/go-outline@v0.0.0-20210608161538-9736a4bde949 \
-    && go install -v github.com/stamblerre/gocode@v1.0.0 \
-    # && go install gotests@latest \
-    # && go install gomodifytags \
-    # && go install impl \
-    # && go install goplay \
-    # && go install dlv \
-    # && go install staticcheck \
-    # && go install gopls \
-    && apt-get autoremove -y \
+    && go install -v github.com/stamblerre/gocode@v1.0.0 
+
+  #  && go install gotests@latest \
+  #  && go install gomodifytags \
+  #  && go install impl \
+#  RUN  go install -v github.com/go-delve/delve/cmd/dlv@latest \
+#     go install -v honnef.co/go/tools/cmd/staticcheck@latest 
+   # && go install gopls \
+# Installs migrate tool
+RUN go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@v4.15.2 \
+    && chmod -R a+w /go/pkg
+# clean up
+RUN apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Revert workaround at top layer.
 ENV DEBIAN_FRONTEND=dialog
+
+WORKDIR /go/src/service
 
 EXPOSE 8080

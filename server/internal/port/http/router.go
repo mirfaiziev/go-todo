@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"database/sql"
+	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -19,16 +20,15 @@ func newRoute(method, pattern string, handler http.HandlerFunc) route {
 	return route{method, regexp.MustCompile("^" + pattern + "$"), handler}
 }
 
-func router(db *sql.DB) func(http.ResponseWriter, *http.Request) {
+func router(logger *log.Logger, db *sql.DB) func(http.ResponseWriter, *http.Request) {
 
-	hwh := handler.NewHttpHandler(db)
-	th := handler.NewTodoHandler(db)
+	//hwh := handler.NewHttpHandler(db)
+	th := handler.NewTodoHandler(logger, db)
 
 	var routes = []route{
-		newRoute(http.MethodGet, "/hello", hwh.ShowHelloWorld),
+		//	newRoute(http.MethodGet, "/hello", hwh.ShowHelloWorld),
 		newRoute(http.MethodGet, "/todo", th.ShowList),
 		newRoute(http.MethodPost, "/todo", th.AddTodo),
-
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
